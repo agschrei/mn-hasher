@@ -36,6 +36,9 @@ public class HashingService {
 
     @Cacheable
     public String getSha512(String message) throws NoSuchAlgorithmException {
+        if(message == null){
+            throw new IllegalArgumentException("Cannot hash null message!");
+        }
         MessageDigest md = MessageDigest.getInstance("SHA-512");
         byte[] bytes = md.digest(message.getBytes(StandardCharsets.UTF_8));
         try {
@@ -47,6 +50,9 @@ public class HashingService {
     }
 
     public String getSha512NoCache(String message) throws NoSuchAlgorithmException {
+        if(message == null){
+            throw new IllegalArgumentException("Cannot hash null message!");
+        }
         MessageDigest md = MessageDigest.getInstance("SHA-512");
         byte[] bytes = md.digest(message.getBytes(StandardCharsets.UTF_8));
         return getHexFromBytes(bytes);
