@@ -1,0 +1,9 @@
+services:
+  mn-hasher:
+    ports:
+      - "8080:8080"
+    image: mn-hasher:latest
+  shpod:
+    image: bretfisher/shpod
+    stdin_open: true
+    tty: true
