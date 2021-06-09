@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: org.agschrei
+testFramework: junit
+sourceLanguage: java
+buildTool: gradle
+features: [annotation-api, app-name, cache-caffeine, graalvm, gradle, http-client, java, java-application, jib, junit, kubernetes, logback, management, micrometer, micrometer-prometheus, mockito, netty-server, openapi, readme, shade, yaml]
