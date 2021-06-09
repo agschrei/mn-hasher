@@ -19,11 +19,15 @@ public class HashingService {
     private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
 
     public String getPbkdf2(String message) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] salt = getRandomBytesOfLength(16);
+        return getPbkdf2(message, salt);
+    }
+
+    @Cacheable(parameters = {"message", "salt"})
+    public String getPbkdf2(String message, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
         int iterations = 10000;
         char[] chars = message.toCharArray();
         //128bit salt recommended here
-        byte[] salt = getRandomBytesOfLength(16);
-
         PBEKeySpec pbeSpec = new PBEKeySpec(chars, salt, iterations, 512);
         SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         byte[] hash = skf.generateSecret(pbeSpec).getEncoded();
@@ -34,6 +38,11 @@ public class HashingService {
     public String getSha512(String message) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-512");
         byte[] bytes = md.digest(message.getBytes(StandardCharsets.UTF_8));
+        try {
+            Thread.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return getHexFromBytes(bytes);
     }
 

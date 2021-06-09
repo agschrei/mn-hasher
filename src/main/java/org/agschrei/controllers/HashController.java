@@ -14,6 +14,7 @@ import org.agschrei.data.HashResponse;
 import org.agschrei.services.HashingService;
 
 import javax.inject.Inject;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
@@ -26,12 +27,25 @@ public class HashController {
     HashingService hashingService;
 
     @Operation(summary = "Returns pbkdf2 hash for input text",
-            description = "Computes 1000 iterations of PBKDF2-SHA256 with a random 128-bit salt")
+            description = "Computes 10000 iterations of PBKDF2-SHA256 with a random 128-bit salt")
     @Get(uri = "/pbkdf2/{input}", produces = MediaType.APPLICATION_JSON)
     public Single<HttpResponse<HashResponse>> getPbkdf2Hash(String input) {
         try {
             return Single.just(HttpResponse.ok().body(
                     new HashResponse(HashAlgorithm.PBKDF2, hashingService.getPbkdf2(input)))
+            );
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+            return Single.just(HttpResponse.serverError());
+        }
+    }
+
+    @Operation(summary = "Returns pbkdf2 hash for input text",
+            description = "Computes 10000 iterations of PBKDF2-SHA256 with a random 128-bit salt")
+    @Get(uri = "/pbkdf2/{input}/{salt}", produces = MediaType.APPLICATION_JSON)
+    public Single<HttpResponse<HashResponse>> getPbkdf2Hash(String input, String salt) {
+        try {
+            return Single.just(HttpResponse.ok().body(
+                    new HashResponse(HashAlgorithm.PBKDF2, hashingService.getPbkdf2(input, salt.getBytes(StandardCharsets.UTF_8))))
             );
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             return Single.just(HttpResponse.serverError());
